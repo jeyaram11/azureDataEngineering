@@ -312,6 +312,42 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_build_dimensions_Type2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load dimProduct",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_Load_dimProduct]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_jtechfinance",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1014,47 +1050,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_jtechfinance_kv')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/BinaryDataDestination')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "It describes the destination store.",
-				"linkedServiceName": {
-					"referenceName": "ls_jtechfinance_dev",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Container": {
-						"type": "String"
-					},
-					"Directory": {
-						"type": "String"
-					},
-					"filename": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": {
-							"value": "@{dataset().Directory}",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@{dataset().Container}",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_jtechfinance_dev')]"
 			]
 		}
 	]

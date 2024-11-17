@@ -13,6 +13,45 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/BinaryDataDestination')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "It describes the destination store.",
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "String"
+					},
+					"Directory": {
+						"type": "String"
+					},
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@{dataset().Directory}",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@{dataset().Container}",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/BinaryDataSource_File')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -753,82 +792,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "sampledata/Celeste",
-						"fileSystem": "raw"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "TransactionId",
-						"type": "String"
-					},
-					{
-						"name": "TransactionDate",
-						"type": "String"
-					},
-					{
-						"name": "OnlineRetailer",
-						"type": "String"
-					},
-					{
-						"name": "SalesMonth",
-						"type": "String"
-					},
-					{
-						"name": "SalesRegion",
-						"type": "String"
-					},
-					{
-						"name": "SalesCurrency",
-						"type": "String"
-					},
-					{
-						"name": "Title",
-						"type": "String"
-					},
-					{
-						"name": "Vintage",
-						"type": "String"
-					},
-					{
-						"name": "Variety",
-						"type": "String"
-					},
-					{
-						"name": "Score",
-						"type": "String"
-					},
-					{
-						"name": "ListPrice",
-						"type": "String"
-					},
-					{
-						"name": "Quantity",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/abs_csv_raw_celeste_ex3')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_jtechfinance_dev",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "Celeste_2022_09.csv",
 						"folderPath": "sampledata/Celeste",
 						"fileSystem": "raw"
 					},
