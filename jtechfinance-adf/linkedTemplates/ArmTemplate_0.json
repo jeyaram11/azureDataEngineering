@@ -1,0 +1,1061 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "jtechfinance-adf"
+		},
+		"AzureSqlDatabase1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
+		},
+		"ls_sql_jtechfinance_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_sql_jtechfinance'"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "jtechfinance-sql.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "jtechfinance-sqldb"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "jtechfinance-admin"
+		},
+		"ls_jtechfinance_kv_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://jtechfinance-kv.vault.azure.net/"
+		},
+		"ls_sql_jtechfinance_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "jtechfinance-sql.database.windows.net"
+		},
+		"ls_sql_jtechfinance_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "jtechfinance-sqldb"
+		},
+		"ls_sql_jtechfinance_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "jtechfinance-admin"
+		},
+		"ls_jtechfinance_dev_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://jtechfinance.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabase1_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabase1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDatabase1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_jtechfinance_kv')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('ls_jtechfinance_kv_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_sql_jtechfinance')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('ls_sql_jtechfinance_properties_typeProperties_server')]",
+					"database": "[parameters('ls_sql_jtechfinance_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('ls_sql_jtechfinance_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('ls_sql_jtechfinance_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/fl_RemoveZeroValues')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "04. Exercise"
+				},
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "RemoveZeroValues"
+						},
+						{
+							"name": "SourceCSVCeleste"
+						},
+						{
+							"name": "outputCSVCleansedCeleste"
+						}
+					],
+					"scriptLines": [
+						"input(output(",
+						"          OnlineRetailer as string,",
+						"          SalesMonth as string,",
+						"          SalesRegion as string,",
+						"          SalesCurrency as string,",
+						"          Title as string,",
+						"          Vintage as string,",
+						"          Variety as string,",
+						"          Score as string,",
+						"          ListPrice as string,",
+						"          Quantity as long,",
+						"          FileName as string",
+						"     ),",
+						"     order: 0,",
+						"     allowSchemaDrift: false) ~> SourceCSVCeleste",
+						"SourceCSVCeleste filter(Quantity != 0) ~> RemoveZeroValues",
+						"RemoveZeroValues output() ~> outputCSVCleansedCeleste"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/flowlet1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "04. Exercise"
+				},
+				"type": "Flowlet",
+				"typeProperties": {
+					"sources": [],
+					"sinks": [],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "input1"
+						},
+						{
+							"name": "output1"
+						}
+					],
+					"scriptLines": [
+						"input(output(",
+						"          PostalCode as string",
+						"     ),",
+						"     order: 0,",
+						"     allowSchemaDrift: true) ~> input1",
+						"input1 derive(PostalCode = lpad(PostalCode, 6, '0')) ~> derivedColumn1",
+						"derivedColumn1 output() ~> output1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_LoadStaging_Product')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load stageproduct",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LoadStageProduct]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_jtechfinance",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "08. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-10T10:48:13Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_LoadStaging_Sales')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load stageSales",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LoadStageSales]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_jtechfinance",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "08. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-10T10:55:25Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_build_dimensions_Type1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load dimStore",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_Load_dimStore]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_jtechfinance",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "09. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-10T12:46:36Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "StoreList"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductNo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Province",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Region",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Winery",
+						"type": "nchar"
+					},
+					{
+						"name": "Vintage",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Score",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "DealerPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Markup",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ListPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "IsRowCurrent",
+						"type": "tinyint",
+						"precision": 3
+					},
+					{
+						"name": "EffectiveDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "EndDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "dimProduct"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductNo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Province",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Region",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Winery",
+						"type": "nchar"
+					},
+					{
+						"name": "Vintage",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Score",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "DealerPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Markup",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ListPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "IsRowCurrent",
+						"type": "tinyint",
+						"precision": 3
+					},
+					{
+						"name": "EffectiveDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "EndDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "dimProduct"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ProductDimension')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductNo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Province",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Region",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Winery",
+						"type": "nchar"
+					},
+					{
+						"name": "Vintage",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Score",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "DealerPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Markup",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ListPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "IsRowCurrent",
+						"type": "tinyint",
+						"precision": 3
+					},
+					{
+						"name": "EffectiveDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "EndDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "dimProduct"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dimProduct')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductNo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Province",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Region",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Winery",
+						"type": "nchar"
+					},
+					{
+						"name": "Vintage",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Score",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "DealerPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Markup",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ListPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "IsRowCurrent",
+						"type": "tinyint",
+						"precision": 3
+					},
+					{
+						"name": "EffectiveDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "EndDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "dimProduct"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sql_dim_store')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "StoreId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "StoreName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StoreType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Description",
+						"type": "nvarchar"
+					},
+					{
+						"name": "InsertedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "dimStore"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sql_stage_dynamic')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TableName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "08. Exercise"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "stage",
+					"table": {
+						"value": "@dataset().TableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sql_stage_product')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductNo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Country",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Score",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DealerPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Markup",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ListPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Province",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Region_1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Vintage",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Varietal",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Winery",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "dimProduct"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sql_stage_product_table')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ProductNo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Country",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Score",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DealerPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Markup",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ListPrice",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Province",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Region_1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Vintage",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Varietal",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Winery",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "Product"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sql_stage_store')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "StoreName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StoreType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Description",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "stage",
+					"table": "Store"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_jtechfinance_dev')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_jtechfinance_dev_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ls_jtechfinance_kv",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "jtechfinance-dev"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_jtechfinance_kv')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryDataDestination')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "It describes the destination store.",
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "String"
+					},
+					"Directory": {
+						"type": "String"
+					},
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@{dataset().Directory}",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@{dataset().Container}",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_jtechfinance_dev')]"
+			]
+		}
+	]
+}

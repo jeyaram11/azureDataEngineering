@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "jtechfinance-adf"
+		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
+		"ls_sql_jtechfinance_password": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "jtechfinance-sql.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "jtechfinance-sqldb"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "jtechfinance-admin"
+		},
+		"ls_jtechfinance_dev_properties_typeProperties_url": {
+			"value": "https://jtechfinance.dfs.core.windows.net/"
+		},
+		"ls_jtechfinance_kv_properties_typeProperties_baseUrl": {
+			"value": "https://jtechfinance-kv.vault.azure.net/"
+		},
+		"ls_sql_jtechfinance_properties_typeProperties_server": {
+			"value": "jtechfinance-sql.database.windows.net"
+		},
+		"ls_sql_jtechfinance_properties_typeProperties_database": {
+			"value": "jtechfinance-sqldb"
+		},
+		"ls_sql_jtechfinance_properties_typeProperties_userName": {
+			"value": "jtechfinance-admin"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

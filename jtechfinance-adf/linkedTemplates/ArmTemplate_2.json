@@ -1,0 +1,1957 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "jtechfinance-adf"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/abs_csv_raw_cleased_sales')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "02. Exercise"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "sales_data",
+						"fileSystem": "clensed"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/abs_csv_raw_masterdata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "sampledata/MasterData",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CurrencyCode",
+						"type": "String"
+					},
+					{
+						"name": "CurrencyName",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/abs_csv_raw_sales')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "02. Exercise"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "sampledata/Arancione",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "OnlineRetailer",
+						"type": "String"
+					},
+					{
+						"name": "SalesMonth",
+						"type": "String"
+					},
+					{
+						"name": "Title",
+						"type": "String"
+					},
+					{
+						"name": "Vintage",
+						"type": "String"
+					},
+					{
+						"name": "Variety",
+						"type": "String"
+					},
+					{
+						"name": "Score",
+						"type": "String"
+					},
+					{
+						"name": "ListPrice",
+						"type": "String"
+					},
+					{
+						"name": "Quantity",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/abs_json_raw_Verde_param')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": "sampledata/Verde",
+						"fileSystem": "raw"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"YearMonth": {
+							"type": "string"
+						},
+						"StoreName": {
+							"type": "string"
+						},
+						"Sales": {
+							"type": "object",
+							"properties": {
+								"Product": {
+									"type": "string"
+								},
+								"Vintage": {
+									"type": "string"
+								},
+								"Variety": {
+									"type": "string"
+								},
+								"Score": {
+									"type": "string"
+								},
+								"SalesPrice": {
+									"type": "string"
+								},
+								"SalesQty": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ads_json_raw_Verde')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "sampledata/Verde",
+						"fileSystem": "raw"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"YearMonth": {
+							"type": "string"
+						},
+						"StoreName": {
+							"type": "string"
+						},
+						"Sales": {
+							"type": "object",
+							"properties": {
+								"Product": {
+									"type": "string"
+								},
+								"Vintage": {
+									"type": "string"
+								},
+								"Variety": {
+									"type": "string"
+								},
+								"Score": {
+									"type": "string"
+								},
+								"SalesPrice": {
+									"type": "string"
+								},
+								"SalesQty": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/zip_destination')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "01. Exercise"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "raw"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/zip_source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "01. Exercise"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "sampledata.zip",
+						"fileSystem": "landing"
+					},
+					"compression": {
+						"type": "ZipDeflate"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db_Build_dimStore')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "sql_stage_store",
+								"type": "DatasetReference"
+							},
+							"name": "stageStore"
+						},
+						{
+							"dataset": {
+								"referenceName": "sql_dim_store",
+								"type": "DatasetReference"
+							},
+							"name": "sourceDimStore"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "sql_dim_store",
+								"type": "DatasetReference"
+							},
+							"name": "dimStore"
+						}
+					],
+					"transformations": [
+						{
+							"name": "checkStoreExists"
+						},
+						{
+							"name": "setInsertUpdateDates"
+						},
+						{
+							"name": "UpdateOrInsert"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          StoreName as string,",
+						"          StoreType as string,",
+						"          Description as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> stageStore",
+						"source(output(",
+						"          StoreId as integer,",
+						"          StoreName as string,",
+						"          StoreType as string,",
+						"          Description as string,",
+						"          InsertedDate as timestamp,",
+						"          UpdatedDate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> sourceDimStore",
+						"stageStore, sourceDimStore lookup(stageStore@StoreName == sourceDimStore@StoreName,",
+						"     multiple: true,",
+						"     broadcast: 'auto')~> checkStoreExists",
+						"checkStoreExists derive(InsertedDate = iif(isNull(InsertedDate),currentTimestamp(),InsertedDate),",
+						"          UpdatedDate = currentTimestamp()) ~> setInsertUpdateDates",
+						"setInsertUpdateDates alterRow(upsertIf(true())) ~> UpdateOrInsert",
+						"UpdateOrInsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          StoreId as integer,",
+						"          StoreName as string,",
+						"          StoreType as string,",
+						"          Description as string,",
+						"          InsertedDate as timestamp,",
+						"          UpdatedDate as timestamp",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['StoreName'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          StoreName = stageStore@StoreName,",
+						"          StoreType = stageStore@StoreType,",
+						"          Description = stageStore@Description,",
+						"          InsertedDate,",
+						"          UpdatedDate",
+						"     )) ~> dimStore"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_build_dimProduct')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "sql_stage_product_table",
+								"type": "DatasetReference"
+							},
+							"name": "stageProduct"
+						},
+						{
+							"dataset": {
+								"referenceName": "ProductDimension",
+								"type": "DatasetReference"
+							},
+							"name": "sourceDimProduct"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "dimProduct",
+								"type": "DatasetReference"
+							},
+							"name": "InsertNewProducts"
+						},
+						{
+							"dataset": {
+								"referenceName": "dimProduct",
+								"type": "DatasetReference"
+							},
+							"name": "setInactiveProduct"
+						},
+						{
+							"dataset": {
+								"referenceName": "ProductDimension",
+								"type": "DatasetReference"
+							},
+							"name": "setActiveRows"
+						}
+					],
+					"transformations": [
+						{
+							"name": "activeDimProduct"
+						},
+						{
+							"name": "newAndOldProduct"
+						},
+						{
+							"name": "newProducts"
+						},
+						{
+							"name": "setNewRecordFields"
+						},
+						{
+							"name": "Type2ChangeExists"
+						},
+						{
+							"name": "setInactiveRow"
+						},
+						{
+							"name": "setInactiveRowUpdates"
+						},
+						{
+							"name": "flagUpdates"
+						},
+						{
+							"name": "setActiveRow"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ProductNo as string,",
+						"          Country as string,",
+						"          Score as string,",
+						"          DealerPrice as integer,",
+						"          Markup as double,",
+						"          ListPrice as integer,",
+						"          Province as string,",
+						"          Region_1 as string,",
+						"          Title as string,",
+						"          Vintage as integer,",
+						"          Varietal as string,",
+						"          Winery as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> stageProduct",
+						"source(output(",
+						"          ProductId as integer,",
+						"          ProductNo as string,",
+						"          ProductName as string,",
+						"          Province as string,",
+						"          Region as string,",
+						"          Type as string,",
+						"          Winery as string,",
+						"          Vintage as integer,",
+						"          Score as integer,",
+						"          DealerPrice as integer,",
+						"          Markup as double,",
+						"          ListPrice as integer,",
+						"          UpdatedDate as timestamp,",
+						"          IsRowCurrent as integer,",
+						"          EffectiveDate as timestamp,",
+						"          EndDate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> sourceDimProduct",
+						"sourceDimProduct filter(IsRowCurrent == 1) ~> activeDimProduct",
+						"stageProduct, activeDimProduct join(stageProduct@ProductNo == sourceDimProduct@ProductNo,",
+						"     joinType:'left',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> newAndOldProduct",
+						"newAndOldProduct split(isNull(sourceDimProduct@ProductNo),",
+						"     stageProduct@ProductNo == sourceDimProduct@ProductNo && toInteger(stageProduct@Score) == sourceDimProduct@Score,",
+						"     disjoint: false) ~> newProducts@(NewProducts, NoUpdateProducts, UpdateProducts)",
+						"newProducts@NewProducts derive(UpdatedDate = currentTimestamp(),",
+						"          IsRowCurrent = 1,",
+						"          EffectiveDate = currentTimestamp(),",
+						"          EndDate = toDate('2099-12-31')) ~> setNewRecordFields",
+						"newProducts@UpdateProducts, activeDimProduct exists(equals(newProducts@UpdateProducts@ProductNo, sourceDimProduct@ProductNo) &&\r",
+						"(toInteger(newProducts@UpdateProducts@Score) != sourceDimProduct@Score),",
+						"     negate:false,",
+						"     broadcast: 'auto')~> Type2ChangeExists",
+						"Type2ChangeExists derive(IsRowCurrent = 0,",
+						"          EndDate = currentTimestamp(),",
+						"          ProductId = ProductId) ~> setInactiveRow",
+						"setInactiveRow select(mapColumn(",
+						"          ProductId,",
+						"          IsRowCurrent,",
+						"          EndDate",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> setInactiveRowUpdates",
+						"setInactiveRowUpdates alterRow(updateIf(true())) ~> flagUpdates",
+						"newProducts@UpdateProducts derive(isRowCurrent = 1,",
+						"          EffectiveDate = currentTimestamp(),",
+						"          EndDate = currentTimestamp()) ~> setActiveRow",
+						"setNewRecordFields sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          ProductId as integer,",
+						"          ProductNo as string,",
+						"          ProductName as string,",
+						"          Province as string,",
+						"          Region as string,",
+						"          Type as string,",
+						"          Winery as string,",
+						"          Vintage as integer,",
+						"          Score as integer,",
+						"          DealerPrice as integer,",
+						"          Markup as double,",
+						"          ListPrice as integer,",
+						"          UpdatedDate as timestamp,",
+						"          IsRowCurrent as integer,",
+						"          EffectiveDate as timestamp,",
+						"          EndDate as timestamp",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ProductNo = newProducts@NewProducts@ProductNo,",
+						"          ProductName = Title,",
+						"          Province = newProducts@NewProducts@Province,",
+						"          Region = Region_1,",
+						"          Type = Varietal,",
+						"          Winery = newProducts@NewProducts@Winery,",
+						"          Vintage = newProducts@NewProducts@Vintage,",
+						"          Score = newProducts@NewProducts@Score,",
+						"          DealerPrice = newProducts@NewProducts@DealerPrice,",
+						"          Markup = newProducts@NewProducts@Markup,",
+						"          ListPrice = newProducts@NewProducts@ListPrice,",
+						"          UpdatedDate,",
+						"          IsRowCurrent,",
+						"          EffectiveDate,",
+						"          EndDate",
+						"     )) ~> InsertNewProducts",
+						"flagUpdates sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          ProductId as integer,",
+						"          ProductNo as string,",
+						"          ProductName as string,",
+						"          Province as string,",
+						"          Region as string,",
+						"          Type as string,",
+						"          Winery as string,",
+						"          Vintage as integer,",
+						"          Score as integer,",
+						"          DealerPrice as integer,",
+						"          Markup as double,",
+						"          ListPrice as integer,",
+						"          UpdatedDate as timestamp,",
+						"          IsRowCurrent as integer,",
+						"          EffectiveDate as timestamp,",
+						"          EndDate as timestamp",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:true,",
+						"     upsertable:false,",
+						"     keys:['ProductId'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ProductId,",
+						"          IsRowCurrent,",
+						"          EndDate",
+						"     )) ~> setInactiveProduct",
+						"setActiveRow sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          ProductId as integer,",
+						"          ProductNo as string,",
+						"          ProductName as string,",
+						"          Province as string,",
+						"          Region as string,",
+						"          Type as string,",
+						"          Winery as string,",
+						"          Vintage as integer,",
+						"          Score as integer,",
+						"          DealerPrice as integer,",
+						"          Markup as double,",
+						"          ListPrice as integer,",
+						"          UpdatedDate as timestamp,",
+						"          IsRowCurrent as integer,",
+						"          EffectiveDate as timestamp,",
+						"          EndDate as timestamp",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          ProductNo = newProducts@UpdateProducts@ProductNo,",
+						"          ProductName,",
+						"          Province = newProducts@UpdateProducts@Province,",
+						"          Region = Region_1,",
+						"          Type,",
+						"          Winery = newProducts@UpdateProducts@Winery,",
+						"          Vintage = newProducts@UpdateProducts@Vintage,",
+						"          Score = newProducts@UpdateProducts@Score,",
+						"          DealerPrice = newProducts@UpdateProducts@DealerPrice,",
+						"          Markup = newProducts@UpdateProducts@Markup,",
+						"          ListPrice = newProducts@UpdateProducts@ListPrice,",
+						"          UpdatedDate,",
+						"          IsRowCurrent = setActiveRow@isRowCurrent,",
+						"          EffectiveDate,",
+						"          EndDate",
+						"     )) ~> setActiveRows"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MoveFiles')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Move files from one folder to another folder",
+				"activities": [
+					{
+						"name": "GetFileList",
+						"description": "Get the list of file",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "BinaryDataSource_Folder",
+								"type": "DatasetReference",
+								"parameters": {
+									"Container": {
+										"value": "@pipeline().parameters.SourceStore_Location",
+										"type": "Expression"
+									},
+									"Directory": {
+										"value": "@pipeline().parameters.SourceStore_Directory",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEachFile",
+						"description": "Iterate each file, and move them one by one.",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "FilterFiles",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('FilterFiles').output.value",
+								"type": "Expression"
+							},
+							"batchCount": 20,
+							"activities": [
+								{
+									"name": "CopyAFile",
+									"description": "Copy a file from the source store to the destination store.",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											},
+											"recursive": false
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"dataIntegrationUnits": 0
+									},
+									"inputs": [
+										{
+											"referenceName": "BinaryDataSource_File",
+											"type": "DatasetReference",
+											"parameters": {
+												"Container": {
+													"value": "@pipeline().parameters.SourceStore_Location",
+													"type": "Expression"
+												},
+												"Directory": {
+													"value": "@pipeline().parameters.SourceStore_Directory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDataDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"Container": {
+													"value": "@pipeline().parameters.DestinationStore_Location",
+													"type": "Expression"
+												},
+												"Directory": {
+													"value": "@pipeline().parameters.DestinationStore_Directory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "DeleteAFile",
+									"description": "Delete a file from the source store",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "CopyAFile",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "BinaryDataSource_File",
+											"type": "DatasetReference",
+											"parameters": {
+												"Container": {
+													"value": "@pipeline().parameters.SourceStore_Location",
+													"type": "Expression"
+												},
+												"Directory": {
+													"value": "@pipeline().parameters.SourceStore_Directory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "FilterFiles",
+						"description": "Only files will be selected, the source-folders will not be selected.",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "GetFileList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetFileList').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@and(contains(item().name, 'Celeste'), not(contains(item().name,'Error')))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"SourceStore_Location": {
+						"type": "String",
+						"defaultValue": "clensed"
+					},
+					"SourceStore_Directory": {
+						"type": "String"
+					},
+					"DestinationStore_Location": {
+						"type": "String",
+						"defaultValue": "clensed"
+					},
+					"DestinationStore_Directory": {
+						"type": "String",
+						"defaultValue": "sales_data"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-10T08:46:11Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_Build_dimStore')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Build dim Store",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "db_Build_dimStore",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"stageStore": {},
+									"sourceDimStore": {},
+									"dimStore": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "09. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-10T11:40:22Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/db_Build_dimStore')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_CopyAndUnzipFile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy and unzip data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "landing//sampledata.zip"
+							},
+							{
+								"name": "Destination",
+								"value": "raw//"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings",
+									"compressionProperties": {
+										"type": "ZipDeflateReadSettings",
+										"preserveZipFileNameAsFolder": false
+									}
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "zip_source",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "zip_destination",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "01. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-10-23T10:11:43Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/zip_source')]",
+				"[concat(variables('factoryId'), '/datasets/zip_destination')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_CopyMasterDataToCleansed')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Master To Cleansed",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "sampledata/MasterData",
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": "*.csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "abs_csv_raw_masterdata",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "abs_csv_cleansed_masterdata_v2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "07. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-10T09:30:54Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/abs_csv_raw_masterdata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_CopyProductDataToCleansed')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Product Data To Cleansed",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "sampledata/ProductData",
+									"wildcardFileName": "*.csv",
+									"deleteFilesAfterCompletion": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "abs_binary_raw_productdata",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "abs_binary_cleansed_productdata",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "07. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-10T09:36:35Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_Copy_RawToCleansed_Sales')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Raw to cleansed Sales",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "raw/sampledata/Arancione/"
+							},
+							{
+								"name": "Destination",
+								"value": "clensed/sales_data/"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 0
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"validateDataConsistency": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "abs_csv_raw_sales",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "abs_csv_raw_cleased_sales",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "02. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-10-23T10:11:43Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/abs_csv_raw_sales')]",
+				"[concat(variables('factoryId'), '/datasets/abs_csv_raw_cleased_sales')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_Copy_RawtoCleansed_Sales_Verde')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetFileList",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ads_json_raw_Verde",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetFileList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetFileList').output.childItems",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "copyJsonToCSV_Verde",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "JsonSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "JsonReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings",
+												"copyBehavior": "FlattenHierarchy"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"path": "$['YearMonth']"
+													},
+													"sink": {
+														"name": "SalesMonth",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['StoreName']"
+													},
+													"sink": {
+														"name": "OnlineRetailer",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['Sales']['Product']"
+													},
+													"sink": {
+														"name": "Title",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['Sales']['Vintage']"
+													},
+													"sink": {
+														"name": "Vintage"
+													}
+												},
+												{
+													"source": {
+														"path": "$['Sales']['Variety']"
+													},
+													"sink": {
+														"name": "Variety"
+													}
+												},
+												{
+													"source": {
+														"path": "$['Sales']['Score']"
+													},
+													"sink": {
+														"name": "Score"
+													}
+												},
+												{
+													"source": {
+														"path": "$['Sales']['SalesPrice']"
+													},
+													"sink": {
+														"name": "ListPrice",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['Sales']['SalesQty']"
+													},
+													"sink": {
+														"name": "Quantity",
+														"type": "String"
+													}
+												}
+											]
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "abs_json_raw_Verde_param",
+											"type": "DatasetReference",
+											"parameters": {
+												"filename": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "abs_csb_cleansed_Verde_param",
+											"type": "DatasetReference",
+											"parameters": {
+												"destfilename": {
+													"value": "@concat(substring(item().name,0,sub(length(item().name),5)), '.csv')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "02. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-10-29T10:57:54Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ads_json_raw_Verde')]",
+				"[concat(variables('factoryId'), '/datasets/abs_json_raw_Verde_param')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_LoadStaging_MasterAndProduct')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetMetadata",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT * FROM dbo.ADF_Metadata where FolderName in ('masterdata','productdata')",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "sql_stage_dynamic",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "_notSet"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Loop over Metadata",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetMetadata').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "LoadDataToSQL",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": {
+													"value": "@item().FolderName",
+													"type": "Expression"
+												},
+												"wildcardFileName": {
+													"value": "@item().FileName",
+													"type": "Expression"
+												},
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"preCopyScript": {
+												"value": "TRUNCATE TABLE stage.@{item().TableName}",
+												"type": "Expression"
+											},
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "abs_csv_cleansed_stage",
+											"type": "DatasetReference",
+											"parameters": {
+												"FolderName": {
+													"value": "@item().FolderName",
+													"type": "Expression"
+												},
+												"FileName": {
+													"value": "@item().FileName",
+													"type": "Expression"
+												},
+												"Delimiter": {
+													"value": "@item().Delimiter",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "sql_stage_dynamic",
+											"type": "DatasetReference",
+											"parameters": {
+												"TableName": {
+													"value": "@item().TableName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "08. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-10T10:09:52Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_LoadStaging_Transactions')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetMetadata",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "TruncateStageSales",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT * FROM dbo.ADF_Metadata where FolderName in ('sales_data')",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "sql_stage_dynamic",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "_notSet"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Loop over Metadata",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetMetadata').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "LoadDataToSQL",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": {
+													"value": "@item().FolderName",
+													"type": "Expression"
+												},
+												"wildcardFileName": {
+													"value": "@item().FileName",
+													"type": "Expression"
+												},
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "abs_csv_cleansed_stage",
+											"type": "DatasetReference",
+											"parameters": {
+												"FolderName": {
+													"value": "@item().FolderName",
+													"type": "Expression"
+												},
+												"FileName": {
+													"value": "@item().FileName",
+													"type": "Expression"
+												},
+												"Delimiter": {
+													"value": "@item().Delimiter",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "sql_stage_dynamic",
+											"type": "DatasetReference",
+											"parameters": {
+												"TableName": {
+													"value": "@item().TableName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "TruncateStageSales",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "TRUNCATE TABLE stage.Arancione_Sales\r\nTRUNCATE TABLE stage.Verde_Sales\r\nTRUNCATE TABLE stage.Celeste_Sales\r\nSELECT count(*) FROM stage.Arancione_Sales",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "sql_stage_dynamic",
+								"type": "DatasetReference",
+								"parameters": {
+									"TableName": "_notSet"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "08. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-10T10:40:02Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_build_dimProduct')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Build Dim Product",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_build_dimProduct",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"stageProduct": {},
+									"sourceDimProduct": {},
+									"InsertNewProducts": {},
+									"setInactiveProduct": {},
+									"setActiveRows": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "09. Exercise"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-17T11:28:22Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_build_dimProduct')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "03. Exercise"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          StoreId as integer,",
+						"          StoreName as string,",
+						"          OnlineStore as boolean",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> source1",
+						"source1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          StoreId as string,",
+						"          StoreName as string",
+						"     ),",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
