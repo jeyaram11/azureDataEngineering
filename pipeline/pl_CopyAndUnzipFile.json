@@ -1,0 +1,70 @@
+{
+	"name": "pl_CopyAndUnzipFile",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy and unzip data",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "landing//sampledata.zip"
+					},
+					{
+						"name": "Destination",
+						"value": "raw//"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings",
+								"preserveZipFileNameAsFolder": false
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "zip_source",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "zip_destination",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "01. Exercise"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-23T10:11:43Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,19 @@
+{
+	"name": "abs_binary_cleansed_productdata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_jtechfinance_dev",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "productdata",
+				"fileSystem": "clensed"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

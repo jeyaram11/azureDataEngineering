@@ -1,0 +1,11 @@
+{
+	"name": "ls_jtechfinance_kv",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://jtechfinance-kv.vault.azure.net/"
+		}
+	}
+}

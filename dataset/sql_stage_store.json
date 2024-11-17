@@ -1,0 +1,30 @@
+{
+	"name": "sql_stage_store",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_jtechfinance",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "StoreName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StoreType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Description",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "stage",
+			"table": "Store"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

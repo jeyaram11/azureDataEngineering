@@ -1,0 +1,25 @@
+{
+	"name": "zip_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_jtechfinance_dev",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "01. Exercise"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "sampledata.zip",
+				"fileSystem": "landing"
+			},
+			"compression": {
+				"type": "ZipDeflate"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

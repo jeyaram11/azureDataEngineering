@@ -1,0 +1,19 @@
+{
+	"name": "ls_jtechfinance_dev",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://jtechfinance.dfs.core.windows.net/",
+			"accountKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_jtechfinance_kv",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "jtechfinance-dev"
+			}
+		}
+	}
+}

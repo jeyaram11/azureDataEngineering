@@ -1,0 +1,272 @@
+{
+	"name": "df_build_dimProduct",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sql_stage_product_table",
+						"type": "DatasetReference"
+					},
+					"name": "stageProduct"
+				},
+				{
+					"dataset": {
+						"referenceName": "ProductDimension",
+						"type": "DatasetReference"
+					},
+					"name": "sourceDimProduct"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dimProduct",
+						"type": "DatasetReference"
+					},
+					"name": "InsertNewProducts"
+				},
+				{
+					"dataset": {
+						"referenceName": "dimProduct",
+						"type": "DatasetReference"
+					},
+					"name": "setInactiveProduct"
+				},
+				{
+					"dataset": {
+						"referenceName": "ProductDimension",
+						"type": "DatasetReference"
+					},
+					"name": "ActiveProduct"
+				}
+			],
+			"transformations": [
+				{
+					"name": "activeDimProduct"
+				},
+				{
+					"name": "newAndOldProduct"
+				},
+				{
+					"name": "newProducts"
+				},
+				{
+					"name": "setNewRecordFields"
+				},
+				{
+					"name": "Type2ChangeExists"
+				},
+				{
+					"name": "setInactiveRow"
+				},
+				{
+					"name": "setInactiveRowUpdates"
+				},
+				{
+					"name": "flagUpdates"
+				},
+				{
+					"name": "setActiveRow"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ProductNo as string,",
+				"          Country as string,",
+				"          Score as string,",
+				"          DealerPrice as integer,",
+				"          Markup as double,",
+				"          ListPrice as integer,",
+				"          Province as string,",
+				"          Region_1 as string,",
+				"          Title as string,",
+				"          Vintage as integer,",
+				"          Varietal as string,",
+				"          Winery as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> stageProduct",
+				"source(output(",
+				"          ProductId as integer,",
+				"          ProductNo as string,",
+				"          ProductName as string,",
+				"          Province as string,",
+				"          Region as string,",
+				"          Type as string,",
+				"          Winery as string,",
+				"          Vintage as integer,",
+				"          Score as integer,",
+				"          DealerPrice as integer,",
+				"          Markup as double,",
+				"          ListPrice as integer,",
+				"          UpdatedDate as timestamp,",
+				"          IsRowCurrent as integer,",
+				"          EffectiveDate as timestamp,",
+				"          EndDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceDimProduct",
+				"sourceDimProduct filter(IsRowCurrent == 1) ~> activeDimProduct",
+				"stageProduct, activeDimProduct join(stageProduct@ProductNo == sourceDimProduct@ProductNo,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> newAndOldProduct",
+				"newAndOldProduct split(isNull(sourceDimProduct@ProductNo),",
+				"     disjoint: false) ~> newProducts@(NewProducts, ExistingProducts)",
+				"newProducts@NewProducts derive(UpdatedDate = currentTimestamp(),",
+				"          IsRowCurrent = 1,",
+				"          EffectiveDate = currentTimestamp(),",
+				"          EndDate = toDate('2099-12-31')) ~> setNewRecordFields",
+				"newProducts@ExistingProducts, activeDimProduct exists(equals(newProducts@ExistingProducts@ProductNo, sourceDimProduct@ProductNo) &&\r",
+				"(toInteger(newProducts@ExistingProducts@Score) != sourceDimProduct@Score),",
+				"     negate:false,",
+				"     broadcast: 'auto')~> Type2ChangeExists",
+				"Type2ChangeExists derive(IsRowCurrent = 0,",
+				"          EndDate = currentTimestamp(),",
+				"          ProductId = ProductId) ~> setInactiveRow",
+				"setInactiveRow select(mapColumn(",
+				"          ProductId,",
+				"          IsRowCurrent,",
+				"          EndDate",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> setInactiveRowUpdates",
+				"setInactiveRowUpdates alterRow(updateIf(true())) ~> flagUpdates",
+				"newProducts@ExistingProducts derive(IsRowCurrent = 1,",
+				"          EffectiveDate = currentTimestamp(),",
+				"          EndDate = currentTimestamp()) ~> setActiveRow",
+				"setNewRecordFields sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ProductId as integer,",
+				"          ProductNo as string,",
+				"          ProductName as string,",
+				"          Province as string,",
+				"          Region as string,",
+				"          Type as string,",
+				"          Winery as string,",
+				"          Vintage as integer,",
+				"          Score as integer,",
+				"          DealerPrice as integer,",
+				"          Markup as double,",
+				"          ListPrice as integer,",
+				"          UpdatedDate as timestamp,",
+				"          IsRowCurrent as integer,",
+				"          EffectiveDate as timestamp,",
+				"          EndDate as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ProductNo = newProducts@NewProducts@ProductNo,",
+				"          ProductName = Title,",
+				"          Province = newProducts@NewProducts@Province,",
+				"          Region = Region_1,",
+				"          Type = Varietal,",
+				"          Winery = newProducts@NewProducts@Winery,",
+				"          Vintage = newProducts@NewProducts@Vintage,",
+				"          Score = newProducts@NewProducts@Score,",
+				"          DealerPrice = newProducts@NewProducts@DealerPrice,",
+				"          Markup = newProducts@NewProducts@Markup,",
+				"          ListPrice = newProducts@NewProducts@ListPrice,",
+				"          UpdatedDate,",
+				"          IsRowCurrent,",
+				"          EffectiveDate,",
+				"          EndDate",
+				"     )) ~> InsertNewProducts",
+				"flagUpdates sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ProductId as integer,",
+				"          ProductNo as string,",
+				"          ProductName as string,",
+				"          Province as string,",
+				"          Region as string,",
+				"          Type as string,",
+				"          Winery as string,",
+				"          Vintage as integer,",
+				"          Score as integer,",
+				"          DealerPrice as integer,",
+				"          Markup as double,",
+				"          ListPrice as integer,",
+				"          UpdatedDate as timestamp,",
+				"          IsRowCurrent as integer,",
+				"          EffectiveDate as timestamp,",
+				"          EndDate as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['ProductId'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ProductId,",
+				"          IsRowCurrent,",
+				"          EndDate",
+				"     )) ~> setInactiveProduct",
+				"setActiveRow sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ProductId as integer,",
+				"          ProductNo as string,",
+				"          ProductName as string,",
+				"          Province as string,",
+				"          Region as string,",
+				"          Type as string,",
+				"          Winery as string,",
+				"          Vintage as integer,",
+				"          Score as integer,",
+				"          DealerPrice as integer,",
+				"          Markup as double,",
+				"          ListPrice as integer,",
+				"          UpdatedDate as timestamp,",
+				"          IsRowCurrent as integer,",
+				"          EffectiveDate as timestamp,",
+				"          EndDate as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ProductNo = newProducts@ExistingProducts@ProductNo,",
+				"          ProductName,",
+				"          Province = newProducts@ExistingProducts@Province,",
+				"          Region = Region_1,",
+				"          Type,",
+				"          Winery = newProducts@ExistingProducts@Winery,",
+				"          Vintage = newProducts@ExistingProducts@Vintage,",
+				"          Score = newProducts@ExistingProducts@Score,",
+				"          DealerPrice = newProducts@ExistingProducts@DealerPrice,",
+				"          Markup = newProducts@ExistingProducts@Markup,",
+				"          ListPrice = newProducts@ExistingProducts@ListPrice,",
+				"          UpdatedDate,",
+				"          IsRowCurrent,",
+				"          EffectiveDate,",
+				"          EndDate",
+				"     )) ~> ActiveProduct"
+			]
+		}
+	}
+}

@@ -1,0 +1,34 @@
+{
+	"name": "BinaryDataSource_Folder",
+	"properties": {
+		"description": "It describes the folder in the data source store.",
+		"linkedServiceName": {
+			"referenceName": "ls_jtechfinance_dev",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Container": {
+				"type": "String"
+			},
+			"Directory": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{dataset().Directory}",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@{dataset().Container}",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

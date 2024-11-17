@@ -1,0 +1,226 @@
+{
+	"name": "pl_Copy_RawToCleansed_Sales_Celeste_ex6",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data Flow Copy Raw to Cleansed Celetse",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_Copy_RawToCleansed_Sales_Celesete_ex6",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "failOnError",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "Data Flow Copy Raw to Cleansed Celetse",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": {
+						"value": "@activity('Data Flow Copy Raw to Cleansed Celetse').error.message",
+						"type": "Expression"
+					},
+					"errorCode": "5000"
+				}
+			},
+			{
+				"name": "Set Error Message",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "failOnError",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ErrorMessage",
+					"value": {
+						"value": "@activity('failOnError').error.message",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Error Code",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "failOnError",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ErrorCode",
+					"value": {
+						"value": "@activity('failOnError').error.errorCode",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Write Error Log",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Error Message",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Error Code",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"additionalColumns": [
+							{
+								"name": "ErrorCode",
+								"value": {
+									"value": "@variables('ErrorCode')",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "ErrorMessage",
+								"value": {
+									"value": "@variables('ErrorMessage')",
+									"type": "Expression"
+								}
+							}
+						],
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ErrorCode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ErrorCode",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ErrorMessage",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ErrorMessage",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SinkLongFile",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SinkError",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"ErrorMessage": {
+				"type": "String",
+				"defaultValue": "test"
+			},
+			"ErrorCode": {
+				"type": "String",
+				"defaultValue": "123"
+			}
+		},
+		"folder": {
+			"name": "06. Exercise"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-08T16:13:06Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

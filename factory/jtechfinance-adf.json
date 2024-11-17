@@ -1,0 +1,17 @@
+{
+	"name": "jtechfinance-adf",
+	"properties": {
+		"globalParameters": {
+			"globalParamProjectName": {
+				"type": "string",
+				"value": "\"VinoWorld\""
+			}
+		}
+	},
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "e897e56e-489d-4157-9473-b043ae4e5138",
+		"tenantId": "ed7518b7-22eb-4594-a90d-5c6683be5500"
+	}
+}

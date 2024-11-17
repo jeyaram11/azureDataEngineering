@@ -1,0 +1,21 @@
+{
+	"name": "zip_destination",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_jtechfinance_dev",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "01. Exercise"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "raw"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
