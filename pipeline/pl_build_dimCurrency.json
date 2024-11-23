@@ -1,0 +1,31 @@
+{
+	"name": "pl_build_dimCurrency",
+	"properties": {
+		"activities": [
+			{
+				"name": "Stored procedure",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_Load_dimCurrency]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_sql_jtechfinance",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "09. Exercise"
+		},
+		"annotations": []
+	}
+}
