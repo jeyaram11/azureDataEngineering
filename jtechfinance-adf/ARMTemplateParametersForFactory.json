@@ -8,6 +8,9 @@
 		"AzureSqlDatabase1_password": {
 			"value": ""
 		},
+		"ls_dbr_j_techfinance_accessToken": {
+			"value": ""
+		},
 		"ls_sql_jtechfinance_password": {
 			"value": ""
 		},

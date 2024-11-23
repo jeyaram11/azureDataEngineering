@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
 		},
+		"ls_dbr_j_techfinance_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'ls_dbr_j_techfinance'"
+		},
 		"ls_sql_jtechfinance_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_sql_jtechfinance'"
@@ -76,6 +80,9 @@
 					},
 					"AzureSqlDatabase1_password": {
 						"value": "[parameters('AzureSqlDatabase1_password')]"
+					},
+					"ls_dbr_j_techfinance_accessToken": {
+						"value": "[parameters('ls_dbr_j_techfinance_accessToken')]"
 					},
 					"ls_sql_jtechfinance_password": {
 						"value": "[parameters('ls_sql_jtechfinance_password')]"
