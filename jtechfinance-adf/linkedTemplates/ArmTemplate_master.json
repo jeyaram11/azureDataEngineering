@@ -111,9 +111,6 @@
 					},
 					"ls_sql_jtechfinance_properties_typeProperties_userName": {
 						"value": "[parameters('ls_sql_jtechfinance_properties_typeProperties_userName')]"
-					},
-					"tr_event_load_newfiles_properties_typeProperties_scope": {
-						"value": "[parameters('tr_event_load_newfiles_properties_typeProperties_scope')]"
 					}
 				}
 			},
@@ -175,6 +172,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"tr_event_load_newfiles_properties_typeProperties_scope": {
+						"value": "[parameters('tr_event_load_newfiles_properties_typeProperties_scope')]"
 					}
 				}
 			},
