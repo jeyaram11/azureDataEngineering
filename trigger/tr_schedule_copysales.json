@@ -1,0 +1,25 @@
+{
+	"name": "tr_schedule_copysales",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_master_schedule",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-11-23T15:53:00",
+				"endTime": "2024-11-24T15:53:00",
+				"timeZone": "GMT Standard Time"
+			}
+		}
+	}
+}
