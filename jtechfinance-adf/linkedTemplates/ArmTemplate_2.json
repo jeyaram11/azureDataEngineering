@@ -13,6 +13,32 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/abs_csv_cleansed_masterdata_v2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_jtechfinance_dev",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "masterdata",
+						"fileSystem": "clensed"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/abs_csv_cleansed_stage')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1413,7 +1439,8 @@
 				"lastPublishTime": "2024-11-10T09:30:54Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/abs_csv_raw_masterdata')]"
+				"[concat(variables('factoryId'), '/datasets/abs_csv_raw_masterdata')]",
+				"[concat(variables('factoryId'), '/datasets/abs_csv_cleansed_masterdata_v2')]"
 			]
 		},
 		{
@@ -1574,217 +1601,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/abs_csv_raw_sales')]",
 				"[concat(variables('factoryId'), '/datasets/abs_csv_raw_cleased_sales')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_Copy_RawtoCleansed_Sales_Verde')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "GetFileList",
-						"type": "GetMetadata",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "ads_json_raw_Verde",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"fieldList": [
-								"childItems"
-							],
-							"storeSettings": {
-								"type": "AzureBlobFSReadSettings",
-								"recursive": true,
-								"enablePartitionDiscovery": false
-							},
-							"formatSettings": {
-								"type": "JsonReadSettings"
-							}
-						}
-					},
-					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "GetFileList",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('GetFileList').output.childItems",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"activities": [
-								{
-									"name": "copyJsonToCSV_Verde",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "JsonSource",
-											"storeSettings": {
-												"type": "AzureBlobFSReadSettings",
-												"recursive": true,
-												"enablePartitionDiscovery": false
-											},
-											"formatSettings": {
-												"type": "JsonReadSettings"
-											}
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings",
-												"copyBehavior": "FlattenHierarchy"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"quoteAllText": true,
-												"fileExtension": ".txt"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"mappings": [
-												{
-													"source": {
-														"path": "$['YearMonth']"
-													},
-													"sink": {
-														"name": "SalesMonth",
-														"type": "String"
-													}
-												},
-												{
-													"source": {
-														"path": "$['StoreName']"
-													},
-													"sink": {
-														"name": "OnlineRetailer",
-														"type": "String"
-													}
-												},
-												{
-													"source": {
-														"path": "$['Sales']['Product']"
-													},
-													"sink": {
-														"name": "Title",
-														"type": "String"
-													}
-												},
-												{
-													"source": {
-														"path": "$['Sales']['Vintage']"
-													},
-													"sink": {
-														"name": "Vintage"
-													}
-												},
-												{
-													"source": {
-														"path": "$['Sales']['Variety']"
-													},
-													"sink": {
-														"name": "Variety"
-													}
-												},
-												{
-													"source": {
-														"path": "$['Sales']['Score']"
-													},
-													"sink": {
-														"name": "Score"
-													}
-												},
-												{
-													"source": {
-														"path": "$['Sales']['SalesPrice']"
-													},
-													"sink": {
-														"name": "ListPrice",
-														"type": "String"
-													}
-												},
-												{
-													"source": {
-														"path": "$['Sales']['SalesQty']"
-													},
-													"sink": {
-														"name": "Quantity",
-														"type": "String"
-													}
-												}
-											]
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "abs_json_raw_Verde_param",
-											"type": "DatasetReference",
-											"parameters": {
-												"filename": {
-													"value": "@item().name",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "abs_csb_cleansed_Verde_param",
-											"type": "DatasetReference",
-											"parameters": {
-												"destfilename": {
-													"value": "@concat(substring(item().name,0,sub(length(item().name),5)), '.csv')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "02. Exercise"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-10-29T10:57:54Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ads_json_raw_Verde')]",
-				"[concat(variables('factoryId'), '/datasets/abs_json_raw_Verde_param')]"
 			]
 		}
 	]

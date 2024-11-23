@@ -268,6 +268,45 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_buildFacts')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_Load_FactSales]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_jtechfinance",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "09. Exercise"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_build_dimCurrency')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -954,80 +993,6 @@
 						"value": "@dataset().TableName",
 						"type": "Expression"
 					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sql_stage_product')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_sql_jtechfinance",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ProductNo",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Country",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Score",
-						"type": "nvarchar"
-					},
-					{
-						"name": "DealerPrice",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Markup",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "ListPrice",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Province",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Region_1",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Vintage",
-						"type": "smallint",
-						"precision": 5
-					},
-					{
-						"name": "Varietal",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Winery",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "dimProduct"
 				}
 			},
 			"dependsOn": [
