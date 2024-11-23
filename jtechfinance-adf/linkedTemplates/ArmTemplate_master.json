@@ -51,6 +51,10 @@
 			"type": "string",
 			"defaultValue": "jtechfinance-admin"
 		},
+		"tr_event_load_newfiles_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/dd9b8fc9-6ca7-4bfd-b0ba-d437fd2e66e8/resourceGroups/jtechfinance-rg/providers/Microsoft.Storage/storageAccounts/jtechfinance"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -107,6 +111,9 @@
 					},
 					"ls_sql_jtechfinance_properties_typeProperties_userName": {
 						"value": "[parameters('ls_sql_jtechfinance_properties_typeProperties_userName')]"
+					},
+					"tr_event_load_newfiles_properties_typeProperties_scope": {
+						"value": "[parameters('tr_event_load_newfiles_properties_typeProperties_scope')]"
 					}
 				}
 			},

@@ -37,6 +37,9 @@
 		},
 		"ls_sql_jtechfinance_properties_typeProperties_userName": {
 			"value": "jtechfinance-admin"
+		},
+		"tr_event_load_newfiles_properties_typeProperties_scope": {
+			"value": "/subscriptions/dd9b8fc9-6ca7-4bfd-b0ba-d437fd2e66e8/resourceGroups/jtechfinance-rg/providers/Microsoft.Storage/storageAccounts/jtechfinance"
 		}
 	}
 }

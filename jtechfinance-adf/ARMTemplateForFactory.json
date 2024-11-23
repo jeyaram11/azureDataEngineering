@@ -50,6 +50,10 @@
 		"ls_sql_jtechfinance_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "jtechfinance-admin"
+		},
+		"tr_event_load_newfiles_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/dd9b8fc9-6ca7-4bfd-b0ba-d437fd2e66e8/resourceGroups/jtechfinance-rg/providers/Microsoft.Storage/storageAccounts/jtechfinance"
 		}
 	},
 	"variables": {
@@ -5447,6 +5451,26 @@
 						"     allowSchemaDrift: true) ~> input1",
 						"input1 derive(PostalCode = lpad(PostalCode, 6, '0')) ~> derivedColumn1",
 						"derivedColumn1 output() ~> output1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tr_event_load_newfiles')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/raw/blobs/sampledata/Arancione/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('tr_event_load_newfiles_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
 					]
 				}
 			},

@@ -46,6 +46,10 @@
 		"ls_sql_jtechfinance_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "jtechfinance-admin"
+		},
+		"tr_event_load_newfiles_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/dd9b8fc9-6ca7-4bfd-b0ba-d437fd2e66e8/resourceGroups/jtechfinance-rg/providers/Microsoft.Storage/storageAccounts/jtechfinance"
 		}
 	},
 	"variables": {
@@ -211,6 +215,26 @@
 						"     allowSchemaDrift: true) ~> input1",
 						"input1 derive(PostalCode = lpad(PostalCode, 6, '0')) ~> derivedColumn1",
 						"derivedColumn1 output() ~> output1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tr_event_load_newfiles')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/raw/blobs/sampledata/Arancione/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('tr_event_load_newfiles_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
 					]
 				}
 			},
@@ -788,105 +812,6 @@
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ProductDimension')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_sql_jtechfinance",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ProductId",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ProductNo",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ProductName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Province",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Region",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Type",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Winery",
-						"type": "nchar"
-					},
-					{
-						"name": "Vintage",
-						"type": "smallint",
-						"precision": 5
-					},
-					{
-						"name": "Score",
-						"type": "smallint",
-						"precision": 5
-					},
-					{
-						"name": "DealerPrice",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Markup",
-						"type": "float",
-						"precision": 15
-					},
-					{
-						"name": "ListPrice",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "UpdatedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "IsRowCurrent",
-						"type": "tinyint",
-						"precision": 3
-					},
-					{
-						"name": "EffectiveDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "EndDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "dimProduct"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dimProduct')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
