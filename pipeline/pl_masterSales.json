@@ -1,0 +1,47 @@
+{
+	"name": "pl_masterSales",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy Store Sales To Cleansed",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_Copy_RawToCleansed_Sales",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Load Cleansed Sales to Staging",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Copy Store Sales To Cleansed",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_LoadStaging_Transactions",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}
