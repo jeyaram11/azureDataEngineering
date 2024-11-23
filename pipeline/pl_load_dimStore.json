@@ -1,0 +1,31 @@
+{
+	"name": "pl_load_dimStore",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load dimStore DeltaTable",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/jey.wkit@gmail.com/j-techfinance/elt/load_dimStore"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_dbr_j_techfinance",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "10 - Exercise"
+		},
+		"annotations": []
+	}
+}
