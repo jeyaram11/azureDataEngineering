@@ -1972,6 +1972,64 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/df_Copy_RawToCleansed_Sales_Celesete_ex6')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_masterSales')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Store Sales To Cleansed",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_Copy_RawToCleansed_Sales",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Load Cleansed Sales to Staging",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Copy Store Sales To Cleansed",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_LoadStaging_Transactions",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_Copy_RawToCleansed_Sales')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_LoadStaging_Transactions')]"
+			]
 		}
 	]
 }
