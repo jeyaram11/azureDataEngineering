@@ -1,0 +1,24 @@
+{
+	"name": "pl_master_schedule",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy Raw to Cleansed",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_Copy_RawToCleansed_Sales",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}
