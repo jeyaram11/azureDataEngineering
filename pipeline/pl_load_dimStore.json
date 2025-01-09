@@ -26,6 +26,8 @@
 		"folder": {
 			"name": "10 - Exercise"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2024-11-23T14:56:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }

@@ -13,6 +13,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "ads_json_raw_Verde",
@@ -195,7 +196,7 @@
 			"name": "02. Exercise"
 		},
 		"annotations": [],
-		"lastPublishTime": "2024-10-29T10:57:54Z"
+		"lastPublishTime": "2024-11-23T12:47:50Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
