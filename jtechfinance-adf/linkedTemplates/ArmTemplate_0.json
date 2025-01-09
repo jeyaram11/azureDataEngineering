@@ -329,7 +329,8 @@
 				"folder": {
 					"name": "09. Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T12:47:50Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -368,7 +369,8 @@
 				"folder": {
 					"name": "09. Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T12:27:40Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -407,7 +409,8 @@
 				"folder": {
 					"name": "09. Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T12:27:40Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -446,7 +449,8 @@
 				"folder": {
 					"name": "09. Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T12:27:40Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -522,7 +526,8 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-17T15:12:22Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -561,7 +566,8 @@
 				"folder": {
 					"name": "10 - Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T14:56:46Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_dbr_j_techfinance')]"

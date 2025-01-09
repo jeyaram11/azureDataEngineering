@@ -1332,7 +1332,7 @@
 					"name": "02. Exercise"
 				},
 				"annotations": [],
-				"lastPublishTime": "2024-10-29T10:57:54Z"
+				"lastPublishTime": "2024-11-23T12:47:50Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ads_json_raw_Verde')]",
@@ -1794,7 +1794,8 @@
 				"folder": {
 					"name": "09. Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T12:47:50Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -1833,7 +1834,8 @@
 				"folder": {
 					"name": "09. Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T12:27:40Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -1872,7 +1874,8 @@
 				"folder": {
 					"name": "09. Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T12:27:40Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -1964,7 +1967,8 @@
 				"folder": {
 					"name": "09. Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T12:27:40Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -2040,7 +2044,8 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-17T15:12:22Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_sql_jtechfinance')]"
@@ -2079,7 +2084,8 @@
 				"folder": {
 					"name": "10 - Exercise"
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T14:56:46Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_dbr_j_techfinance')]"
@@ -2136,7 +2142,8 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T15:11:44Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_Copy_RawToCleansed_Sales')]",
@@ -2170,7 +2177,8 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2024-11-23T15:55:00Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pl_Copy_RawToCleansed_Sales')]"
@@ -4262,6 +4270,37 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/tr_schedule_copysales')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pl_master_schedule",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2024-11-23T15:53:00",
+						"endTime": "2024-11-24T15:53:00",
+						"timeZone": "GMT Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_master_schedule')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -5518,38 +5557,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/tr_schedule_copysales')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "pl_master_schedule",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2024-11-23T15:53:00",
-						"endTime": "2024-11-24T15:53:00",
-						"timeZone": "GMT Standard Time",
-						"schedule": {}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pl_master_schedule')]"
-			]
 		}
 	]
 }
